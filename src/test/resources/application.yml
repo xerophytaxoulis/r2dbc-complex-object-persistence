@@ -1,0 +1,10 @@
+logging:
+  level:
+    org:
+      springframework:
+        r2dbc: DEBUG
+spring:
+  datasource:
+    initialization-mode: always
+r2dbc:
+  driver-name: "io.r2dbc:r2dbc-h2"
