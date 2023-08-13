@@ -18,7 +18,6 @@ public class DatasourceConfiguration extends AbstractR2dbcConfiguration {
     private String driverName;
 
     public ConnectionFactory connectionFactory() {
-        System.out.println("DRIVER NAME ---------------------------------------------> " + driverName);
         return ConnectionFactories.get(driverName);
     }
 
