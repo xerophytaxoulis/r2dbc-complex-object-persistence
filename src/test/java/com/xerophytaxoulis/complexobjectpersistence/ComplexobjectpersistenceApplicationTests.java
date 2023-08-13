@@ -1,5 +1,6 @@
 package com.xerophytaxoulis.complexobjectpersistence;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,8 +28,19 @@ class ComplexobjectpersistenceApplicationTests {
     private final Flux<Person> people = Flux.just(new Person(null, "Peter", addresses.take(1).blockFirst(), null),
         new Person(null, "Hans", addresses.skip(1).blockFirst(), null));
 
+    @BeforeEach
+    void resetDatabase() {
+        var deleteAllPeople = personService.deleteAll();
+        var deleteAllAddresses = addressService.deleteAll();
+        StepVerifier.create(deleteAllPeople).verifyComplete();
+        StepVerifier.create(personService.findAll()).expectNextCount(0).verifyComplete();
+        
+        StepVerifier.create(deleteAllAddresses).verifyComplete();
+        StepVerifier.create(addressService.findAll()).expectNextCount(0).verifyComplete();
+    }
+
     @Test
-    void saveAddress() {
+    void upsertAddress() {
         var address = Mono.just(new Address(null, "test address, house no. 10"));
         var address2 = Mono.just(new Address(null, "test address, house no. 11"));
 
@@ -44,6 +56,15 @@ class ComplexobjectpersistenceApplicationTests {
         StepVerifier.create(saved).expectNextCount(1).verifyComplete();
 
         StepVerifier.create(addressService.findAll()).expectNextCount(2).verifyComplete();
+    }
+
+    @Test
+    void upsertPerson() {
+        var saved = people.flatMap(personService::upsert);
+        StepVerifier.create(saved).expectNextCount(2).verifyComplete();
+
+        // StepVerifier.create(people.take(1).flatMap(personService::upsert)).verifyComplete();
+        StepVerifier.create(personService.findAll()).expectNextCount(2).verifyComplete();
     }
 
 	@Test

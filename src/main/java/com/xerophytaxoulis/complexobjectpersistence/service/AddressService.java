@@ -29,4 +29,7 @@ public class AddressService {
         return this.addressRepository.findAll();
     }
     
+    public Mono<Void> deleteAll() {
+        return this.addressRepository.deleteAll();
+    }
 }

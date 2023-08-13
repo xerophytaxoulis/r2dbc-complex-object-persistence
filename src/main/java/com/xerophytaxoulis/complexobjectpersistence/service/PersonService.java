@@ -17,16 +17,25 @@ public class PersonService {
 
     private final AddressService addressService;    
 
-    public Mono<Person> save(Person p) {
-        return addressService.upsert(p.getAddress()).flatMap(a -> {
-            p.setAddress(a);
-            // Flux.fromIterable(p.getFriends()).flatMap(this::save);
-            return personRepository.save(p);}
+    public Mono<Person> save(Person person) {
+        return addressService.upsert(person.getAddress()).flatMap(address -> {
+            person.setAddress(address);
+            return personRepository.save(person);}
         );
+    }
+
+    public Mono<Person> upsert(Person person) {
+        return personRepository.findByNameAndAddress(person.getName(), person.getAddress().getAddress())
+            .singleOrEmpty()
+            .switchIfEmpty(this.save(person));
     }
 
     public Flux<Person> findAll() {
         return this.personRepository.findAll();
+    }
+
+    public Mono<Void> deleteAll() {
+        return this.personRepository.deleteAll();
     }
     
 }
