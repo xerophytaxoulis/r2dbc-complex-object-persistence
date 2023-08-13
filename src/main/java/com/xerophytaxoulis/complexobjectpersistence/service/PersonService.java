@@ -18,8 +18,11 @@ public class PersonService {
     private final AddressService addressService;    
 
     public Mono<Person> save(Person p) {
-        return addressService.save(p.getAddress()).flatMap(a -> {p.setAddress(a);
-            return personRepository.save(p);});
+        return addressService.upsert(p.getAddress()).flatMap(a -> {
+            p.setAddress(a);
+            // Flux.fromIterable(p.getFriends()).flatMap(this::save);
+            return personRepository.save(p);}
+        );
     }
 
     public Flux<Person> findAll() {

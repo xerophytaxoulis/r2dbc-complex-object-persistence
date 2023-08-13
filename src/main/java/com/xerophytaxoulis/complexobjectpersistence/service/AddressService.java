@@ -15,8 +15,14 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
 
-    public Mono<Address> save(Address a) {
-        return this.addressRepository.save(a);
+    public Mono<Address> save(Address address) {
+        return this.addressRepository.save(address);
+    }
+
+    public Mono<Address> upsert(Address address) {
+        return this.addressRepository.findByAddress(address.getAddress())
+            .singleOrEmpty()
+            .switchIfEmpty(this.save(address));
     }
 
     public Flux<Address> findAll() {

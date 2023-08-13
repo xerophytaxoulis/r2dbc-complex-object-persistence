@@ -7,7 +7,7 @@ import com.xerophytaxoulis.complexobjectpersistence.domain.Person;
 
 import reactor.core.publisher.Flux;
 
-public interface PersonRepository extends ReactiveCrudRepository<Person, Long> {
+public interface PersonRepository extends ReactiveCrudRepository<Person, Integer> {
 
     @Query("select p.*, a.address from person p join address a on p.address_id = a.id")
     Flux<Person> findAll();
