@@ -63,7 +63,7 @@ class ComplexobjectpersistenceApplicationTests {
         var saved = people.flatMap(personService::upsert);
         StepVerifier.create(saved).expectNextCount(2).verifyComplete();
 
-        // StepVerifier.create(people.take(1).flatMap(personService::upsert)).verifyComplete();
+        StepVerifier.create(people.take(1).flatMap(personService::upsert)).expectNextCount(1).verifyComplete();
         StepVerifier.create(personService.findAll()).expectNextCount(2).verifyComplete();
     }
 
