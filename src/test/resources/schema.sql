@@ -9,6 +9,17 @@ create table if not exists ADDRESS (
     , ADDRESS varchar(255)
 );
 
+create table if not exists SUBSCRIPTION (
+      ID serial primary key not null
+    , SUBSCRIPTION_PROVIDER_NAME varchar(255)
+);
+
+create table if not exists PERSON_SUBSCRIPTION (
+      ID serial primary key not null
+    , PERSON_ID integer
+    , SUBSCRIPTION_ID integer
+);
+
 create table if not exists PERSON_FRIEND (
       ID serial primary key not null
     , PERSON_ID integer

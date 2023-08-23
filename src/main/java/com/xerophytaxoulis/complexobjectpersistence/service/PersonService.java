@@ -41,11 +41,19 @@ public class PersonService {
     }
 
     public Flux<Person> findAll() {
-        return this.personRepository.findAll();
+        return personRepository.findAll()
+            .flatMap(this::getSubscriptions);
     }
 
     public Mono<Void> deleteAll() {
         return this.personRepository.deleteAll();
+    }
+
+    private Mono<Person> getSubscriptions(Person person) {
+        return subscriptionService.findSubscriptionsBySubscriberId(person.getId())
+            .collectList()
+            .doOnNext(person::setSubscriptions)
+            .then(Mono.just(person));
     }
     
     private Mono<Person> capturePersonSubscriptionRelation(Person person) {

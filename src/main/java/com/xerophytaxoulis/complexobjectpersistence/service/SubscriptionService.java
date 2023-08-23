@@ -6,6 +6,7 @@ import com.xerophytaxoulis.complexobjectpersistence.domain.Subscription;
 import com.xerophytaxoulis.complexobjectpersistence.repository.SubscriptionRepository;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -16,6 +17,10 @@ public class SubscriptionService {
 
     public Mono<Subscription> save(Subscription subscription) {
         return subscriptionRepository.save(subscription);
+    }
+
+    public Flux<Subscription> findSubscriptionsBySubscriberId(Integer subscriberId) {
+        return subscriptionRepository.findSubscriptionsBySubscriberId(subscriberId);
     }
     
 }
