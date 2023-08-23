@@ -1,6 +1,5 @@
 package com.xerophytaxoulis.complexobjectpersistence.service;
 
-import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +24,6 @@ public class PersonService {
 
     @Transactional
     public Mono<Person> save(Person person) {
-        // we have subscriptions and an address
-        // the address might be already in the database so we need to perform an upsert
-        // subscriptions are bound to a person. the person is new, so will be his subscriptions
         return Flux.fromIterable(person.getSubscriptions())
             .flatMap(subscriptionService::save).collectList()
             .doOnNext(person::setSubscriptions)
