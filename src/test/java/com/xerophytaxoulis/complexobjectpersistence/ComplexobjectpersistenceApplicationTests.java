@@ -31,8 +31,8 @@ class ComplexobjectpersistenceApplicationTests {
     private final List<Subscription> subscriptions = List.of(new Subscription(null, "Netflix"), new Subscription(null, "Apple TV"), new Subscription(null, "Disney Plus"));
 
     private final List<Person> people = List.of(
-        new Person(null, "Peter", addresses.get(0), subscriptions.subList(0, 2), null),
-        new Person(null, "Hans", addresses.get(1), List.of(subscriptions.get(2)), null));
+        new Person(null, "Peter", "peter@bluemchen.de", addresses.get(0), subscriptions.subList(0, 2), null),
+        new Person(null, "Hans", "hans@im-glueck.com", addresses.get(1), List.of(subscriptions.get(2)), null));
 
     @BeforeEach
     void resetDatabase() {

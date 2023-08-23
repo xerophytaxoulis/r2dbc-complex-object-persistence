@@ -1,5 +1,6 @@
 create table if not exists PERSON (
       ID serial primary key not null
+    , EMAIL varchar(255)
     , NAME varchar(255)
     , ADDRESS_ID integer
 );

@@ -1,5 +1,7 @@
 package com.xerophytaxoulis.complexobjectpersistence.service;
 
+import java.util.function.Predicate;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +37,12 @@ public class PersonService {
 
     @Transactional
     public Mono<Person> upsert(Person person) {
-        return personRepository.findByNameAndAddress(person.getName(), person.getAddress().getAddress())
-            .singleOrEmpty()
+        return personRepository.findByEmail(person.getEmail())
+            .flatMap(this::getSubscriptions)
+            // email is unique identifier: check for updates of name, address and subscriptions here
+            .filter(Predicate.not(person::equals))
+            // better do delete old entry and just save new new one or to update fields
+            // .flatMap(personRepository::updatePerson)
             .switchIfEmpty(this.save(person));
     }
 

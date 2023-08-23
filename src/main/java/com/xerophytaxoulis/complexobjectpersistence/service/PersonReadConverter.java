@@ -19,6 +19,7 @@ public class PersonReadConverter implements Converter<Row, Person> {
 
         var person = new Person();
         person.setId(row.get("ID", Integer.class));
+        person.setEmail(row.get("EMAIL", String.class));
         person.setName(row.get("NAME", String.class));
         person.setAddress(address);
 
