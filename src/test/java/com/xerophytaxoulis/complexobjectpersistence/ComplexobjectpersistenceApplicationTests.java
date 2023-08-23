@@ -1,5 +1,7 @@
 package com.xerophytaxoulis.complexobjectpersistence;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,10 @@ class ComplexobjectpersistenceApplicationTests {
     @Autowired
     private AddressService addressService;
 
-    private final Flux<Address> addresses = Flux.just(new Address(null, "nice street, no. 1"), new Address(null, "Hellway 2, Tartarus"));
+    private final List<Address> addresses = List.of(new Address(null, "nice street, no. 1"), new Address(null, "Hellway 2, Tartarus"));
 
-    private final Flux<Person> people = Flux.just(new Person(null, "Peter", addresses.take(1).blockFirst(), null),
-        new Person(null, "Hans", addresses.skip(1).blockFirst(), null));
+    private final List<Person> people = List.of(new Person(null, "Peter", addresses.get(0), null, null),
+        new Person(null, "Hans", addresses.get(1), null, null));
 
     @BeforeEach
     void resetDatabase() {
@@ -60,21 +62,20 @@ class ComplexobjectpersistenceApplicationTests {
 
     @Test
     void upsertPerson() {
-        var saved = people.flatMap(personService::upsert);
+        var saved = Flux.fromIterable(people).flatMap(personService::upsert);
         StepVerifier.create(saved).expectNextCount(2).verifyComplete();
 
-        StepVerifier.create(people.take(1).flatMap(personService::upsert)).expectNextCount(1).verifyComplete();
+        StepVerifier.create(Mono.just(people.get(0)).flatMap(personService::upsert)).expectNextCount(1).verifyComplete();
         StepVerifier.create(personService.findAll()).expectNextCount(2).verifyComplete();
     }
 
 	@Test
 	void savePerson() {
-        var saved = people.flatMap(personService::save);
+        var saved = Flux.fromIterable(people).flatMap(personService::save);
         StepVerifier.create(saved)
             .expectNextMatches(person -> person.getId() != null)
             .expectNextMatches(person -> person.getId() != null)
             .verifyComplete();
-        StepVerifier.create(saved).expectNextCount(2).verifyComplete();
 
         var loaded = personService.findAll();
         loaded.subscribe(System.out::println);
